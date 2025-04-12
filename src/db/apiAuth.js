@@ -14,3 +14,12 @@ export async function  login({email, password}) {
 
     return data;
 }
+
+export async function getCurrentUser() {        // This will get Current User from local Storage and show it
+    const {data :session, error} = await supabase.auth.getSession()
+    // We can also use database instead of relying on local Storage also by getUser()
+    if(!session.session) return null;
+    if(error) throw new Error(error.message)
+
+    return session.session?.user
+}

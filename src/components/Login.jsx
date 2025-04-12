@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Card,
   CardContent,
@@ -12,9 +12,20 @@ import { Button } from './ui/button'
 import { BeatLoader } from 'react-spinners'
 import Error from './Error'
 import * as Yup from 'yup'
+import useFetch from '@/hooks/Use-Fetch'
+import {login} from "../db/apiAuth"
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { URLstate } from '@/Context'
 
 
 function Login() {
+
+  const navigate = useNavigate();
+  let [searchParams] = useSearchParams(); // There can be a case where user will have already pasted link for shorten before login
+
+  const longLink = searchParams.get("createNew"); // From here we will get the original longLink pasted by User
+
+  const { fetchUser } = URLstate()
 
   const [errors, setErrors] = useState([])
 
@@ -31,6 +42,17 @@ function Login() {
     }))
   }
 
+  const {data, error, loading, fn:fnLogin} = useFetch(login, formData)   // This login is from custom hook useFetch
+                          // I just renamed the fn -> fnLogin
+
+  useEffect(() => {
+    console.log(data)
+    if(error === null && data) {      // Then we will route user to dashboard page
+      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`) // If there is longLink write longLink after createNew
+      fetchUser();
+    }
+  }, [data, error])
+
   const handleLogin = async () => {
     setErrors([])
     try {
@@ -42,6 +64,8 @@ function Login() {
       await schema.validate(formData, {abortEarly: false})    // abortEarly false means it wont crash if there is an error until all validations are checked
 
       // API Call
+      await fnLogin();
+      // This will give formData(email & password) then go inside the login, then provide it to supabase and if there is error, will throw error else will return data.
 
     } catch (e) {
       const newErrors = {};
@@ -59,7 +83,7 @@ function Login() {
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>to your account if you already have one</CardDescription>
-        <Error message={"some error"} />
+        {error && <Error message={error.message} />}
       </CardHeader>
       <CardContent className="space-y-2">  {/* space-y-1 adds margin top and bottom. */}
         <div className="space-y-1">
@@ -83,7 +107,7 @@ function Login() {
       </CardContent>
       <CardFooter>
         <Button onClick={handleLogin}>
-          {false ? <BeatLoader size={10} color='#36d7b7' /> : "Login"}  {/* This loading component is from React-spinners */}
+          {loading ? <BeatLoader size={10} color='#36d7b7' /> : "Login"}  {/* This loading component is from React-spinners */}
         </Button>
       </CardFooter>
     </Card>
