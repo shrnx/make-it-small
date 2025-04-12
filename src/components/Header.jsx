@@ -7,10 +7,10 @@ import { LinkIcon, LogOut } from 'lucide-react';
 
 function Header() {
   const navigate = useNavigate();
-  const user = true;
+  const user = false;
 
   return (
-    <nav className='py-4 flex justify-between pr-10 items-center'>
+    <nav className='py-4 flex justify-between items-center'>
       <Link to="/">
         <img src="/Logo.jpeg" className='h-16' alt="Logo" />
       </Link>
