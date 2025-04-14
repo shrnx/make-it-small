@@ -13,11 +13,11 @@ const URLprovider = ({ children }) => {
         fetchUser();        // This will make sure whenever our app loads for the very first time, this auth check will run on every single page every single time
     }, [])
 
-    return <URLcontext.Provider value={{user, fetchUser, loading, isAuthenticated}}>{children}</URLcontext.Provider>
+    return <URLcontext.Provider value={{ user, fetchUser, loading, isAuthenticated }}>{children}</URLcontext.Provider>
 }
 
 export const URLstate = () => {
-    useContext(URLcontext);
+    return useContext(URLcontext);
 }
 
 export default URLprovider

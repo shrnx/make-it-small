@@ -15,7 +15,7 @@ import * as Yup from 'yup'
 import useFetch from '@/hooks/Use-Fetch'
 import {login} from "../db/apiAuth"
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { URLstate } from '@/Context'
+import { URLstate } from "../Context.jsx"
 
 
 function Login() {
@@ -48,8 +48,8 @@ function Login() {
   useEffect(() => {
     console.log(data)
     if(error === null && data) {      // Then we will route user to dashboard page
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`) // If there is longLink write longLink after createNew
       fetchUser();
+      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`) // If there is longLink write longLink after createNew
     }
   }, [data, error])
 
